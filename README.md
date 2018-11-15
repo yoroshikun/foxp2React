@@ -1,44 +1,76 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# foxp2 🦊
 
-## Available Scripts
+**Completed**
 
-In the project directory, you can run:
+**Hello, there!**
 
-### `npm start`
+You have been tasked to create an interactive Pokedex, using data from
+[`Pokeapi`](https://pokeapi.co). The
+[`Documentation`](https://pokeapi.co/docs/v2.html) is pretty extensive and should
+provide you with all the data you need in order to complete this project.
 
-Runs the app in the development mode.<br>
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+The primary endpoint and fields that we will be using is as follows:
 
-The page will reload if you make edits.<br>
-You will also see any lint errors in the console.
+| https://pokeapi.co/docs/v2.html/#pokemon
+| -
+| `id`
+| `name`
+| `weight`
+| `height`
+| `stats`
+| `types`
+| `sprites`
 
-### `npm test`
+And so you don't need to think about design, you can closely follow the mockup we have provided below.
 
-Launches the test runner in the interactive watch mode.<br>
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+![Screenshot](screenshot.jpg)
 
-### `npm run build`
+It is expected that the Pokedex can perform the following.
 
-Builds the app for production to the `build` folder.<br>
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- [x] Grab Pokemon data from Pokeapi and present as per mockup.
+- [x] Present and navigate to the next and previous Pokemon (see bottom of mockup).
+- [x] Ability to navigate directly to a specific Pokemon based on its id (see top-left of mockup).
 
-The build is minified and the filenames include the hashes.<br>
-Your app is ready to be deployed!
+## Setup
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Before we get started let's make sure that you are setup correctly. First make
+sure you have the latest version of [`Node/NPM`](https://nodejs.org) installed
+before proceeding.
 
-### `npm run eject`
+Next, clone this repo, and run `npm install` to download all the required dependencies needed to run this app.
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```
+$ git clone https://github.com/mango-chutney/foxp2.git
+$ cd foxp2
+$ npm install
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Run `npm run start` to start the development server. You will now be able to access the app in your browser by navigating to `http://localhost:3000`.
 
-Instead, it will copy all the configuration files and the transitive dependencies (Webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```
+$ npm run start
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+Compiled successfully!
 
-## Learn More
+You can now view foxp2 in the browser.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+  Local:            http://localhost:3000/
+  On Your Network:  http://192.168.1.109:3000/
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Note that the development build is not optimized.
+To create a production build, use npm run build.
+```
+
+Now check out the `./src` directory. There are two files.
+
+- `index.js` - root react component
+- `index.css` - global styles
+
+These will be your starting point, don't fret, there is no right or wrong way to take on this project, just try your best and if you are having any trouble or if something isn't quite working as expected, don't be afraid to contact `jason@mangochutney.com.au` and `francis@mangochutney.com.au` for help.
+
+And that about does it. When you are all done, send your finished app (preferrably a link to your repository) through to `jason@mangochutney.com.au`, `francis@mangochutney.com.au` and `tristan@mangochutney.com.au`. Good
+luck!
+
+---
+
+_**This app was bootstrapped with [`Create React App`](https://github.com/facebook/create-react-app). Check out the [`Documentation`](https://github.com/facebook/create-react-app/blob/master/packages/react-scripts/template/README.md) for further information related to the build.**_

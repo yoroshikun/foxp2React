@@ -1,9 +1,8 @@
 import * as React from 'react';
 import { Container, Row, Col } from 'react-grid-system';
-import './App.css';
-import PokeDex from './PokeDex';
-import PokeSearch from './PokeSearch';
-import PokeSelector from './PokeSelector';
+import PokeDex from './Components/PokeDex';
+import PokeSearch from './Components/PokeSearch';
+import PokeSelector from './Components/PokeSelector';
 
 class App extends React.Component {
   state = {
