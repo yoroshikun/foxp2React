@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 
 // styles
@@ -42,28 +42,22 @@ const Input = styled.input.attrs({
   font-family: 'Press Start 2P', cursive;
 `;
 
-class PokeSearch extends React.Component {
-  state = {
-    searchId: '',
+const PokeSearch = ({ updatePokemon }) => {
+  const [searchId, setSearchId] = useState('');
+
+  const updateSearchId = event => {
+    setSearchId(event.target.value);
   };
 
-  setSearchId = event => {
-    this.setState({ searchId: event.target.value });
-  };
-
-  render() {
-    const { updatePokemon } = this.props;
-    const { searchId } = this.state;
-    return (
-      <Search>
-        <SearchIDHeading> Go to ID </SearchIDHeading>
-        <Input name="id" value={searchId} onChange={this.setSearchId} />
-        <SearchButton onClick={() => updatePokemon(searchId)}>
-          <SearchText>SEARCH</SearchText>
-        </SearchButton>
-      </Search>
-    );
-  }
-}
+  return (
+    <Search>
+      <SearchIDHeading> Go to ID </SearchIDHeading>
+      <Input name="id" value={searchId} onChange={updateSearchId} />
+      <SearchButton onClick={() => updatePokemon(searchId)}>
+        <SearchText>SEARCH</SearchText>
+      </SearchButton>
+    </Search>
+  );
+};
 
 export default PokeSearch;

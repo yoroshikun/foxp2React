@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-grid-system';
 
@@ -158,132 +158,118 @@ const ViewerLines = ({ onClick }) => (
   </ViewerLinesContainer>
 );
 
-class PokeDex extends React.Component {
-  state = {
-    shiny: false,
-    back: false,
-    selectedSprite: '',
-  };
+const PokeDex = props => {
+  const [shiny, setShiny] = useState(false);
+  const [back, setBack] = useState(false);
+  const [selectedSprite, setSelectedSprite] = useState('');
 
-  componentWillReceiveProps = nextProps => {
-    const { currentPokemon } = nextProps;
-    if (currentPokemon.sprites) {
-      this.selectSprite(currentPokemon);
-    }
-    this.setState({
-      shiny: false,
-      back: false,
-    });
-  };
-
-  switchSprite = type => {
-    console.log('ran switch');
-    // We need current state
-    const { shiny, back } = this.state;
-    const { currentPokemon } = this.props;
-    // What button was pressed?
-    if (type === 'shiny') {
-      this.setState(
-        {
-          shiny: !shiny,
-        },
-        () => {
-          this.selectSprite(currentPokemon);
-        },
-      );
-    }
-    if (type === 'back') {
-      this.setState(
-        {
-          back: !back,
-        },
-        () => {
-          this.selectSprite(currentPokemon);
-        },
-      );
-    }
-  };
-
-  selectSprite = ({ sprites }) => {
+  const selectSprite = ({ sprites }) => {
     const { backDefault, backShiny, frontDefault, frontShiny } = sprites;
-    const { shiny, back } = this.state;
     if (!shiny && !back) {
-      this.setState({
-        selectedSprite: frontDefault,
-      });
+      setSelectedSprite(frontDefault);
     }
     if (shiny && !back) {
-      this.setState({
-        selectedSprite: frontShiny,
-      });
+      setSelectedSprite(frontShiny);
     }
     if (!shiny && back) {
-      this.setState({
-        selectedSprite: backDefault,
-      });
+      setSelectedSprite(backDefault);
     }
     if (shiny && back) {
-      this.setState({
-        selectedSprite: backShiny,
-      });
+      setSelectedSprite(backShiny);
     }
   };
 
-  render() {
-    const {
-      currentPokemon: { id, name, weight, height, stats, types },
-      accentColor,
-      typeToColor,
-    } = this.props;
+  // Runs only on the current pokemon updating
+  useEffect(
+    () => {
+      const { currentPokemon } = props;
+      if (currentPokemon.sprites) {
+        selectSprite(currentPokemon);
+      }
+      setBack(false);
+      setShiny(false);
+    },
+    [props.currentPokemon],
+  );
+  // Runs if shiny or back has been updated
+  useEffect(
+    () => {
+      const { currentPokemon } = props;
+      if (currentPokemon.sprites) {
+        selectSprite(currentPokemon);
+      }
+    },
+    [shiny, back],
+  );
 
-    const { selectedSprite } = this.state;
+  // Runs only on mount and dismount (componentWillDismount, componentWillMount)
+  useEffect(() => {
+    console.log('hi');
+    return () => {
+      console.log('bye');
+    };
+  }, []);
 
-    return (
-      <>
-        <SlantRectangle accentColor={accentColor} />
-        <Container>
-          <Row>
-            <Col sm={4}>
-              <ViewerOuter>
-                <ViewerInner>
-                  <img alt="loading..." src={selectedSprite} />
-                </ViewerInner>
-                <div>
-                  <ViewerCircle onClick={() => this.switchSprite('shiny')} />
-                  <ViewerLines onClick={() => this.switchSprite('back')} />
+  const switchSprite = type => {
+    if (type === 'shiny') {
+      setShiny(!shiny);
+    }
+    if (type === 'back') {
+      setBack(!back);
+    }
+  };
+
+  const {
+    currentPokemon: { id, name, weight, height, stats, types },
+    accentColor,
+    typeToColor,
+  } = props;
+
+  return (
+    <>
+      <SlantRectangle accentColor={accentColor} />
+      <Container>
+        <Row>
+          <Col sm={4}>
+            <ViewerOuter>
+              <ViewerInner>
+                <img alt="loading..." src={selectedSprite} />
+              </ViewerInner>
+              <div>
+                <ViewerCircle onClick={() => switchSprite('shiny')} />
+                <ViewerLines onClick={() => switchSprite('back')} />
+              </div>
+            </ViewerOuter>
+            <Subheading>TYPE</Subheading>
+            {types &&
+              types.map(({ type }) => (
+                <Type key={type} color={typeToColor(type)}>
+                  {type}
+                </Type>
+              ))}
+          </Col>
+          <Col sm={8}>
+            <PokemonHeadingName>{name}</PokemonHeadingName>
+            <GreenScreen>
+              <Subheading>NO</Subheading>
+              <InfoItem>#{String(id).padStart(3, '0')}</InfoItem>
+              <Subheading>WEIGHT</Subheading>
+              <InfoItem>{weight}kg</InfoItem>
+              <Subheading>HEIGHT</Subheading>
+              <InfoItem>{height}m</InfoItem>
+            </GreenScreen>
+            {stats &&
+              stats.map(({ baseStat, name: statName }) => (
+                <div key={statName}>
+                  <Subheading>{statName}</Subheading>
+                  <ProgressBar baseStat={baseStat} />
                 </div>
-              </ViewerOuter>
-              <Subheading>TYPE</Subheading>
-              {types &&
-                types.map(({ type }) => (
-                  <Type key={type} color={typeToColor(type)}>
-                    {type}
-                  </Type>
-                ))}
-            </Col>
-            <Col sm={8}>
-              <PokemonHeadingName>{name}</PokemonHeadingName>
-              <GreenScreen>
-                <Subheading>NO</Subheading>
-                <InfoItem>#{String(id).padStart(3, '0')}</InfoItem>
-                <Subheading>WEIGHT</Subheading>
-                <InfoItem>{weight}kg</InfoItem>
-                <Subheading>HEIGHT</Subheading>
-                <InfoItem>{height}m</InfoItem>
-              </GreenScreen>
-              {stats &&
-                stats.map(({ baseStat, name: statName }) => (
-                  <div key={statName}>
-                    <Subheading>{statName}</Subheading>
-                    <ProgressBar baseStat={baseStat} />
-                  </div>
-                ))}
-            </Col>
-          </Row>
-        </Container>
-      </>
-    );
-  }
-}
+              ))}
+          </Col>
+        </Row>
+      </Container>
+    </>
+  );
+};
 
 export default PokeDex;

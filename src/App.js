@@ -1,40 +1,23 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Container, Row, Col } from 'react-grid-system';
 import PokeDex from './Components/PokeDex';
 import PokeSearch from './Components/PokeSearch';
 import PokeSelector from './Components/PokeSelector';
 
-class App extends React.Component {
-  state = {
-    currentPokemon: {},
-    nextPokemon: {},
-    prevPokemon: {},
-    cachePokemon: {},
-    accentColor: 'white',
-  };
+const App = () => {
+  // State Hooks
+  const [currentPokemon, setCurrentPokemon] = useState();
+  const [nextPokemon, setNextPokemon] = useState();
+  const [prevPokemon, setPrevPokemon] = useState();
+  const [cachePokemon, setCachePokemon] = useState({});
+  const [accentColor, setAccentColor] = useState('white');
 
-  componentDidMount = () => {
-    // Run initial download of pokemon needed to fill the data that we see
-    // Check if has a state in the url
-    const pokemonID = this.urlHelper();
-    if (
-      window.location.href.includes('pokemonID') &&
-      pokemonID >= 1 &&
-      pokemonID <= 802
-    ) {
-      this.updatePokemon(this.urlHelper());
-    } else {
-      // If not default
-      this.updatePokemon(4);
-    }
-  };
-
-  urlHelper = () => {
+  const urlHelper = () => {
     const offset = window.location.href.search('pokemonID') + 10;
     return parseInt(window.location.href.substr(offset, offset + 1), 10);
   };
 
-  fetchPokemon = id =>
+  const fetchPokemon = id =>
     fetch(`https://pokeapi.co/api/v2/pokemon/${id}/`)
       .then(response => {
         if (response.status !== 200) {
@@ -71,16 +54,16 @@ class App extends React.Component {
         },
       }))
       .catch(err => {
-        console.log(err.message || err);
+        console.error(err.message || err);
       });
 
-  updatePokemon = id => {
+  const updatePokemon = id => {
     const numID = parseInt(id, 10);
     // Validate
     if (numID <= 0) {
       // Raise issue lower
       console.error('Value should be greater than 0');
-    } else if (numID >= 802) {
+    } else if (numID >= 803) {
       console.error('Value should be below 802');
     } else {
       // Expand pokemon Id's and name
@@ -91,67 +74,74 @@ class App extends React.Component {
       });
       // Loop fetch
       pokemonIds.forEach(([place, pokemonID]) => {
-        if (pokemonID <= 0 || pokemonID >= 802) {
-          this.setState({
-            [place]: '',
-          });
-        } else {
-          const { cachePokemon } = this.state;
+        if (pokemonID >= 0 || pokemonID <= 802) {
           if (pokemonID in cachePokemon) {
             // Get from cache
-            this.setState(
-              {
-                [place]: cachePokemon[pokemonID],
-              },
-              () => {
-                if (
-                  place === 'currentPokemon' &&
-                  cachePokemon[pokemonID].types
-                ) {
-                  this.setState({
-                    accentColor: this.typeToColor(
-                      cachePokemon[pokemonID].types[0].type,
-                    ),
-                  });
-                  window.history.pushState(
-                    { ID: pokemonID },
-                    'Pokedex',
-                    `/?pokemonID=${pokemonID}`,
-                  );
-                }
-              },
-            );
+            switch (place) {
+              case 'prevPokemon':
+                setPrevPokemon(cachePokemon[pokemonID]);
+                break;
+              case 'currentPokemon':
+                setCurrentPokemon(cachePokemon[pokemonID]);
+                break;
+              case 'nextPokemon':
+                setNextPokemon(cachePokemon[pokemonID]);
+                break;
+              default:
+                console.log('Dont be here');
+                break;
+            }
           } else {
-            this.fetchPokemon(pokemonID).then(response => {
-              this.setState(
-                prevState => ({
-                  [place]: response,
-                  cachePokemon: {
-                    [pokemonID]: response,
-                    ...prevState.cachePokemon,
-                  },
-                }),
-                () => {
-                  if (place === 'currentPokemon' && response.types) {
-                    this.setState({
-                      accentColor: this.typeToColor(response.types[0].type),
-                    });
-                    window.history.pushState(
-                      { ID: pokemonID },
-                      'Pokedex',
-                      `/?pokemonID=${pokemonID}`,
-                    );
-                  }
-                },
-              );
+            fetchPokemon(pokemonID).then(response => {
+              switch (place) {
+                case 'prevPokemon':
+                  setPrevPokemon(response);
+                  setCachePokemon({
+                    ...cachePokemon,
+                    ...{ [pokemonID]: response },
+                  });
+                  break;
+                case 'currentPokemon':
+                  setCurrentPokemon(response);
+                  setCachePokemon({
+                    ...cachePokemon,
+                    ...{ [pokemonID]: response },
+                  });
+                  break;
+                case 'nextPokemon':
+                  setNextPokemon(response);
+                  setCachePokemon({
+                    ...cachePokemon,
+                    ...{ [pokemonID]: response },
+                  });
+                  break;
+                default:
+                  console.log('Dont be here');
+                  break;
+              }
             });
+          }
+        } else {
+          switch ([place]) {
+            case 'prevPokemon':
+              setPrevPokemon({});
+              break;
+            case 'currentPokemon':
+              setCurrentPokemon({});
+              break;
+            case 'nextPokemon':
+              setNextPokemon({});
+              break;
+            default:
+              console.log('Dont be here');
+              break;
           }
         }
       });
     }
   };
 
-  typeToColor = type => {
+  const typeToColor = type => {
     let color = 'green';
     switch (type) {
       case 'fire':
@@ -214,35 +204,58 @@ class App extends React.Component {
     return color;
   };
 
-  render() {
-    const {
-      currentPokemon,
-      prevPokemon,
-      nextPokemon,
-      accentColor,
-    } = this.state;
-    return (
-      <Container fluid style={{ overflow: 'hidden' }}>
-        <Row>
-          <Col sm={2} style={{ background: '#010D27', height: '100vh' }}>
-            <PokeSearch updatePokemon={this.updatePokemon} />
-          </Col>
-          <Col sm={10} style={{ padding: 0 }}>
+  useEffect(() => {
+    const pokemonID = urlHelper();
+    if (
+      window.location.href.includes('pokemonID') &&
+      pokemonID >= 0 &&
+      pokemonID <= 802
+    ) {
+      updatePokemon(pokemonID);
+    } else {
+      // If not default
+      updatePokemon(4);
+    }
+  }, []);
+
+  useEffect(
+    () => {
+      if (currentPokemon) {
+        const { types, id } = currentPokemon;
+        if (id) {
+          setAccentColor(typeToColor(types[0].type));
+          window.history.pushState({ ID: id }, 'Pokedex', `/?pokemonID=${id}`);
+        }
+      }
+    },
+    [currentPokemon],
+  );
+
+  return (
+    <Container fluid style={{ overflow: 'hidden' }}>
+      <Row>
+        <Col sm={2} style={{ background: '#010D27', height: '100vh' }}>
+          <PokeSearch updatePokemon={updatePokemon} />
+        </Col>
+        <Col sm={10} style={{ padding: 0 }}>
+          {currentPokemon && (
             <PokeDex
               currentPokemon={currentPokemon}
               accentColor={accentColor}
-              typeToColor={this.typeToColor}
+              typeToColor={typeToColor}
             />
+          )}
+          {nextPokemon && prevPokemon && (
             <PokeSelector
-              updatePokemon={this.updatePokemon}
+              updatePokemon={updatePokemon}
               prevPokemon={prevPokemon}
               nextPokemon={nextPokemon}
             />
-          </Col>
-        </Row>
-      </Container>
-    );
-  }
-}
+          )}
+        </Col>
+      </Row>
+    </Container>
+  );
+};
 
 export default App;
