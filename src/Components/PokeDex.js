@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-grid-system';
+import typeToColor from '../constants/typeToColor';
 
 // Styles
 const SlantRectangle = styled.div`
@@ -158,7 +159,7 @@ const ViewerLines = ({ onClick }) => (
   </ViewerLinesContainer>
 );
 
-const PokeDex = props => {
+const PokeDex = ({ curr, accentColor }) => {
   const [shiny, setShiny] = useState(false);
   const [back, setBack] = useState(false);
   const [selectedSprite, setSelectedSprite] = useState('');
@@ -182,33 +183,23 @@ const PokeDex = props => {
   // Runs only on the current pokemon updating
   useEffect(
     () => {
-      const { currentPokemon } = props;
-      if (currentPokemon.sprites) {
-        selectSprite(currentPokemon);
+      if (curr.sprites) {
+        selectSprite(curr);
       }
       setBack(false);
       setShiny(false);
     },
-    [props.currentPokemon],
+    [curr],
   );
   // Runs if shiny or back has been updated
   useEffect(
     () => {
-      const { currentPokemon } = props;
-      if (currentPokemon.sprites) {
-        selectSprite(currentPokemon);
+      if (curr.sprites) {
+        selectSprite(curr);
       }
     },
     [shiny, back],
   );
-
-  // Runs only on mount and dismount (componentWillDismount, componentWillMount)
-  useEffect(() => {
-    console.log('hi');
-    return () => {
-      console.log('bye');
-    };
-  }, []);
 
   const switchSprite = type => {
     if (type === 'shiny') {
@@ -219,11 +210,7 @@ const PokeDex = props => {
     }
   };
 
-  const {
-    currentPokemon: { id, name, weight, height, stats, types },
-    accentColor,
-    typeToColor,
-  } = props;
+  const { id, name, weight, height, stats, types } = curr;
 
   return (
     <>

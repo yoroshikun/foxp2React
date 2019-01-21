@@ -23,42 +23,34 @@ const Button = styled.div`
   align-content: center;
 `;
 
-const PokeSelector = props => {
-  const {
-    updatePokemon,
-    prevPokemon: { name: prevName, sprites: prevSprites, id: prevID },
-    nextPokemon: { name: nextName, sprites: nextSprites, id: nextID },
-  } = props;
-
-  return (
-    <Footer>
-      <Container>
-        <Row>
-          {prevSprites && (
-            <Col md={6}>
-              <SelectorContainer>
-                <Button onClick={() => updatePokemon(prevID)}>
-                  {`< ${prevName}`}
-                  <img alt="" src={prevSprites.frontDefault} />
-                </Button>
-              </SelectorContainer>
-            </Col>
-          )}
-          {!prevSprites && <Col md={6} />}
-          {nextSprites && (
-            <Col md={6}>
-              <SelectorContainer>
-                <Button onClick={() => updatePokemon(nextID)}>
-                  <img alt="" src={nextSprites.frontDefault} />
-                  <p>{`${nextName} >`}</p>
-                </Button>
-              </SelectorContainer>
-            </Col>
-          )}
-        </Row>
-      </Container>
-    </Footer>
-  );
-};
+const PokeSelector = ({ setCurrentPokemonID, prev, next }) => (
+  <Footer>
+    <Container>
+      <Row>
+        {prev.sprites && (
+          <Col md={6}>
+            <SelectorContainer>
+              <Button onClick={() => setCurrentPokemonID(prev.id)}>
+                {`< ${prev.name}`}
+                <img alt="" src={prev.sprites.frontDefault} />
+              </Button>
+            </SelectorContainer>
+          </Col>
+        )}
+        {!prev.sprites && <Col md={6} />}
+        {next.sprites && (
+          <Col md={6}>
+            <SelectorContainer>
+              <Button onClick={() => setCurrentPokemonID(next.id)}>
+                <img alt="" src={next.sprites.frontDefault} />
+                <p>{`${next.name} >`}</p>
+              </Button>
+            </SelectorContainer>
+          </Col>
+        )}
+      </Row>
+    </Container>
+  </Footer>
+);
 
 export default PokeSelector;

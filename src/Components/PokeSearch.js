@@ -42,7 +42,7 @@ const Input = styled.input.attrs({
   font-family: 'Press Start 2P', cursive;
 `;
 
-const PokeSearch = ({ updatePokemon }) => {
+const PokeSearch = ({ setCurrentPokemonID }) => {
   const [searchId, setSearchId] = useState('');
 
   const updateSearchId = event => {
@@ -53,7 +53,7 @@ const PokeSearch = ({ updatePokemon }) => {
     <Search>
       <SearchIDHeading> Go to ID </SearchIDHeading>
       <Input name="id" value={searchId} onChange={updateSearchId} />
-      <SearchButton onClick={() => updatePokemon(searchId)}>
+      <SearchButton onClick={() => setCurrentPokemonID(parseInt(searchId, 10))}>
         <SearchText>SEARCH</SearchText>
       </SearchButton>
     </Search>
