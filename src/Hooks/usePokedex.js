@@ -40,6 +40,7 @@ const fetchPokemon = async id => {
     };
     return pokemonData;
   } catch (err) {
+    // eslint-disable-next-line
     return console.error(err.message || err);
   }
 };
