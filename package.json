@@ -4,8 +4,8 @@
   "private": true,
   "dependencies": {
     "eslint-plugin-react-hooks": "^0.0.0",
-    "react": "next",
-    "react-dom": "next",
+    "react": "16.8.0-alpha.1",
+    "react-dom": "^16.8.0-alpha.1",
     "react-grid-system": "^4.3.1",
     "react-scripts": "2.1.1",
     "styled-components": "^4.1.1"
