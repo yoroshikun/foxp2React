@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense } from 'react';
 import styled from 'styled-components';
+import KnownPokemon from './KnownPokemon';
 
 // styles
 const SearchIDHeading = styled.h1`
@@ -27,7 +28,7 @@ const SearchText = styled.p`
 `;
 const Input = styled.input.attrs({
   type: 'number',
-  size: 'Normal',
+  size: 24,
   placeholder: '#',
 })`
   border-radius: 6px;
@@ -42,11 +43,34 @@ const Input = styled.input.attrs({
   font-family: 'Press Start 2P', cursive;
 `;
 
-const PokeSearch = ({ setCurrentPokemonID }) => {
-  const [searchId, setSearchId] = useState('');
+const AllPokemonButton = styled.div`
+  background-color: #77ccd4;
+  color: #ffffff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 0.5rem 0 0.5rem 0;
+  margin: 1rem 0;
+  font-size: 14px;
+  transition: all ease-in 0.175s;
+  text-transform: uppercase;
+`;
 
-  const updateSearchId = event => {
-    setSearchId(event.target.value);
+const KnownPokemonViewBox = styled.div`
+  background-color: rgba(0, 0, 0, 0.6);
+  height: 100vh;
+  width: 100vw;
+  top: 0;
+  left: 0;
+  position: absolute;
+  z-index: 9999;
+`;
+
+const PokeSearch = ({ setCurrentPokemonID }: any) => {
+  const [searchId, setSearchId] = useState('');
+  const [knownPokemonView, setKnownPokemonView] = useState(false);
+
+  const updateSearchId = (event: React.FormEvent<HTMLInputElement>) => {
+    setSearchId(event.currentTarget.value);
   };
 
   return (
@@ -56,6 +80,16 @@ const PokeSearch = ({ setCurrentPokemonID }) => {
       <SearchButton onClick={() => setCurrentPokemonID(parseInt(searchId, 10))}>
         <SearchText>SEARCH</SearchText>
       </SearchButton>
+      <AllPokemonButton onClick={() => setKnownPokemonView(!knownPokemonView)}>
+        View Found Pokemon
+      </AllPokemonButton>
+      {knownPokemonView && (
+        <KnownPokemonViewBox>
+          <Suspense fallback={<div>Loading...</div>}>
+            <KnownPokemon />
+          </Suspense>
+        </KnownPokemonViewBox>
+      )}
     </Search>
   );
 };

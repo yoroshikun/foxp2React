@@ -2,10 +2,21 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { Row, Col } from 'react-grid-system';
 import typeToColor from '../constants/typeToColor';
+import { PokemonObject, PokemonTypes } from '../types';
+
+// Types
+interface SlantRectangle {
+  accentColor: PokemonTypes;
+}
+
+interface ProgressBar {
+  width: string;
+}
 
 // Styles
 const SlantRectangle = styled.div`
-  background-color: ${props => props.accentColor || 'red'};
+  background-color: ${(props: SlantRectangle) =>
+    typeToColor(props.accentColor) || 'red'};
   width: 2500px;
   height: 600px;
   position: absolute;
@@ -64,7 +75,7 @@ const ProgressBarOuter = styled.div`
 const ProgressBarInner = styled.div`
   background-color: #77ccd4;
   color: white;
-  width: ${props => props.width || '30%'};
+  width: ${(props: ProgressBar) => props.width || '30%'};
   height: 100%;
   padding: 0.5rem 0rem 0.5rem 0.75rem;
   border-radius: 3px;
@@ -108,7 +119,7 @@ const ViewerLinesContainer = styled.div`
 `;
 
 // Mini Component
-const ProgressBar = ({ baseStat }) => (
+const ProgressBar = ({ baseStat }: { baseStat: number }) => (
   <ProgressBarOuter>
     <ProgressBarInner width={`${(baseStat / 255) * 100}%`}>
       {baseStat}
@@ -116,7 +127,7 @@ const ProgressBar = ({ baseStat }) => (
   </ProgressBarOuter>
 );
 
-const ViewerLines = ({ onClick }) => (
+const ViewerLines = ({ onClick }: any) => (
   <ViewerLinesContainer {...{ onClick }}>
     <svg height="25" width="30">
       <line
@@ -159,13 +170,13 @@ const ViewerLines = ({ onClick }) => (
   </ViewerLinesContainer>
 );
 
-const PokeDex = ({ curr, accentColor }) => {
+const PokeDex = ({ curr }: { curr: PokemonObject }) => {
   const [shiny, setShiny] = useState(false);
   const [back, setBack] = useState(false);
   const [selectedSprite, setSelectedSprite] = useState('');
 
-  const selectSprite = ({ sprites }) => {
-    const { backDefault, backShiny, frontDefault, frontShiny } = sprites;
+  const selectSprite = ({ sprites }: { sprites: string[] }) => {
+    const [frontDefault, backDefault, frontShiny, backShiny] = sprites;
     if (!shiny && !back) {
       setSelectedSprite(frontDefault);
     }
@@ -181,27 +192,21 @@ const PokeDex = ({ curr, accentColor }) => {
   };
 
   // Runs only on the current pokemon updating
-  useEffect(
-    () => {
-      if (curr.sprites) {
-        selectSprite(curr);
-      }
-      setBack(false);
-      setShiny(false);
-    },
-    [curr],
-  );
+  useEffect(() => {
+    if (curr.sprites) {
+      selectSprite(curr);
+    }
+    setBack(false);
+    setShiny(false);
+  }, [curr]);
   // Runs if shiny or back has been updated
-  useEffect(
-    () => {
-      if (curr.sprites) {
-        selectSprite(curr);
-      }
-    },
-    [shiny, back],
-  );
+  useEffect(() => {
+    if (curr.sprites) {
+      selectSprite(curr);
+    }
+  }, [shiny, back]);
 
-  const switchSprite = type => {
+  const switchSprite = (type: 'shiny' | 'back') => {
     if (type === 'shiny') {
       setShiny(!shiny);
     }
@@ -214,7 +219,7 @@ const PokeDex = ({ curr, accentColor }) => {
 
   return (
     <>
-      <SlantRectangle accentColor={accentColor} />
+      <SlantRectangle accentColor={types[0]} />
       <Container>
         <Row>
           <Col sm={4}>
@@ -229,7 +234,7 @@ const PokeDex = ({ curr, accentColor }) => {
             </ViewerOuter>
             <Subheading>TYPE</Subheading>
             {types &&
-              types.map(({ type }) => (
+              types.map(type => (
                 <Type key={type} color={typeToColor(type)}>
                   {type}
                 </Type>
@@ -241,15 +246,15 @@ const PokeDex = ({ curr, accentColor }) => {
               <Subheading>NO</Subheading>
               <InfoItem>#{String(id).padStart(3, '0')}</InfoItem>
               <Subheading>WEIGHT</Subheading>
-              <InfoItem>{weight}kg</InfoItem>
+              <InfoItem>{weight / 10}kg</InfoItem>
               <Subheading>HEIGHT</Subheading>
-              <InfoItem>{height}m</InfoItem>
+              <InfoItem>{height / 10}m</InfoItem>
             </GreenScreen>
             {stats &&
-              stats.map(({ baseStat, name: statName }) => (
-                <div key={statName}>
-                  <Subheading>{statName}</Subheading>
-                  <ProgressBar baseStat={baseStat} />
+              Object.entries(stats).map(entries => (
+                <div key={entries[0]}>
+                  <Subheading>{entries[0]}</Subheading>
+                  <ProgressBar baseStat={entries[1]} />
                 </div>
               ))}
           </Col>

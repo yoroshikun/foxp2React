@@ -1,4 +1,6 @@
-const typeToColor = type => {
+import { PokemonTypes } from '../types';
+
+const typeToColor = (type: PokemonTypes) => {
   // Default
   let color = 'green';
   switch (type) {

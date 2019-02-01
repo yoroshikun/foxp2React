@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - pokedex--data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: 'pokedex'
+      POSTGRES_PASSWORD: 'mango'
+      POSTGRES_USER: 'docker'
+      # psql
+      PGDATABASE: 'pokedex'
+      PGPASSWORD: 'mango'
+      PGUSER: 'docker'
+    ports:
+      - 5432:5432
+    container_name: pokedex--db
+
+volumes:
+  pokedex--data:
