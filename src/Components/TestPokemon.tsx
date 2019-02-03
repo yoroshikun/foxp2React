@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 import { useQuery, useApolloClient } from 'react-apollo-hooks';
 import createPokemon from '../api/Mutations/createPokemon';
 import fetchPokemon from '../api/pokeAPIFetch';
+import KnownPokemon from './KnownPokemon';
 
 const GET_POKEMON = gql`
   {
@@ -70,6 +71,7 @@ const TestPokemon = () => (
     <PokemonList />
     <PokemonCache />
     <AddPokemonButton />
+    <KnownPokemon />
     <button onClick={() => ''}>Get Pokemon Again</button>
   </Suspense>
 );

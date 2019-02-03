@@ -1,7 +1,6 @@
-import React from 'react';
 import gql from 'graphql-tag';
-import { useApolloClient } from 'react-apollo-hooks';
 import { PokemonObject } from '../../types';
+import { promised } from 'q';
 
 // Graph Querys
 const ADD_POKEMON = gql`
@@ -67,21 +66,26 @@ const createPokemon = (pokemon: PokemonObject, mutate: any) => {
     },
   };
   // Create the stats first (it doesnt depend on the pokemon)
-  mutate({ mutation: ADD_STATS, variables: statObject })
+  const mutateStats = mutate({ mutation: ADD_STATS, variables: statObject })
     .then((response: any) => {
-      console.log(response);
+      Promise.resolve(response);
     })
     .catch((err: any) => {
-      console.log(err);
+      Promise.reject(err);
     });
   // Create the pokemon
-  mutate({ mutation: ADD_POKEMON, variables: pokemonObject })
+  const mutatePokemon = mutate({
+    mutation: ADD_POKEMON,
+    variables: pokemonObject,
+  })
     .then((response: any) => {
-      console.log(response);
+      Promise.resolve(response);
     })
     .catch((err: any) => {
-      console.log(err);
+      Promise.reject(err);
     });
+
+  return Promise.all([mutateStats, mutatePokemon]);
 };
 
 export default createPokemon;

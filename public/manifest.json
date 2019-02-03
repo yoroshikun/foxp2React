@@ -1,6 +1,6 @@
 {
-  "short_name": "Pokedex",
-  "name": "Pokedex React",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
@@ -10,6 +10,6 @@
   ],
   "start_url": ".",
   "display": "standalone",
-  "theme_color": "#ee71fc",
+  "theme_color": "#000000",
   "background_color": "#ffffff"
 }

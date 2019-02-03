@@ -6,6 +6,7 @@ export default gql`
       id
       name
       height
+      weight
       statByStatsId {
         hp
         attack
