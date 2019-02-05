@@ -3,7 +3,7 @@ import { Container, Col, Row } from 'react-grid-system';
 import { PokeViewer, PokeSearch } from '../Components';
 import usePokemon from '../Hooks/usePokemon';
 
-const Pokedex = () => {
+const Pokedex = ({ setScreen }: any) => {
   const [currentPokemonID, setCurrentPokemonID] = useState(4);
   const currentPokemon = usePokemon(currentPokemonID);
 

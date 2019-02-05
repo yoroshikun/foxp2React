@@ -1,22 +1,31 @@
-import React from 'react';
+import React, { Suspense, useState } from 'react';
 import { Container, Col, Row } from 'react-grid-system';
+import { TrainerSelector, TrainersPokemon } from '../Components';
+const Trainer = ({ setScreen }: any) => {
+  const [selectedTrainer, setSelectedTrainer] = useState(0);
 
-const Trainer = () => {
-  // Menu
+  const handleTrainerClick = (trainerID: number, e: any) => {
+    e.preventDefault();
+    setSelectedTrainer(trainerID);
+  };
+  // Trainers
   return (
-    <Container fluid style={{ overflow: 'hidden' }}>
+    <Container>
       <Row>
-        <Col sm={6} style={{ background: '#010D27', height: '100vh' }}>
-          <button
-            onClick={() =>
-              window.history.pushState({}, 'Pokedex Page', 'pokedex')
-            }
-          >
-            Fill in your Pokedex!
-          </button>
+        <Col
+          sm={6}
+          style={{ background: '#010D27', height: '100vh', color: 'white' }}
+        >
+          <div>Select your trainer</div>
+          <Suspense fallback={<div>loading...</div>}>
+            <TrainerSelector handleTrainerClick={handleTrainerClick} />
+          </Suspense>
         </Col>
         <Col sm={6}>
-          <button>Organize your trainers!</button>
+          <div>Pokemon Owned by that trainer appear here</div>
+          <Suspense fallback={<div>loading...</div>}>
+            <TrainersPokemon trainerID={selectedTrainer} />
+          </Suspense>
         </Col>
       </Row>
     </Container>
